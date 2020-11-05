@@ -50,7 +50,7 @@ Fishies=filter(Fishdata, Species == "Perch")
 Fishies = select(Fishies,-Species)
 pairs(Fishies)
 ```
-#### 
+#### Best variables with Perch is Height~Weight.
 
 
 ```{r}
@@ -58,13 +58,15 @@ FishiesB=filter(Fishdata, Species == "Bream")
 FishiesB = select(FishiesB,-Species)
 pairs(FishiesB)
 ```
-
+#### The best variables for Bream fishes is Length2~Height
 
 ```{r}
 FishiesS=filter(Fishdata, Species == "Smelt")
 FishiesS = select(FishiesS,-Species)
 pairs(FishiesS)
 ```
+#### The best 2 variables for Smelt is Weight~L2.
+
 <!--Graphical results here.  Make sure to show your code.  Provide appropriate labels for axes, giving units if possible, and provide a good title for the graph, too.  Use the graphical results to describe the patterns if any that exist in the data as focused toward the research question!-->
 
 ### Numerical Descriptive Results
@@ -72,6 +74,7 @@ pairs(FishiesS)
 ```{r}
 summary(Fishies)
 ```
+
 
 ```{r}
 summary(FishiesB)
@@ -86,7 +89,25 @@ summary(FishiesS)
 Perchmodel=lm(Weight~Length2+Width,data=Fishies)
 summary(Perchmodel)
 ```
+
 #### Adjusted R-Squared for Perch is 0.9341
+
+```{r}
+Breammodel=lm(Weight~Length1+Height,data=FishiesB)
+summary(Breammodel)
+```
+
+#### Adjusted R-square for Bream fishes is 0.9346.
+
+
+```{r}
+Smeltmodel=lm(Weight~Length1+Length2+Width,data=Fishies)
+summary(Smeltmodel)
+```
+
+#### Adjusted R-squared for Smelt is 0.9329.
+
+
 
 ```{r}
 library(leaps)
@@ -103,8 +124,42 @@ as.data.frame(summary.out$outmat)
 library(car)
 subsets(regsubsets.out,statistic="adjr2",legend="bottomright",main="Adjusted R^2")
 ```
-The best is Height and Weight for Perch.
+The best is Height and Width for Perch.
 
+
+```{r}
+library(leaps)
+regsubsets.out <-
+    regsubsets(Weight ~ .,
+               data = FishiesB,
+               nbest = 1,       # 1 best model for each number of predictors
+               nvmax = NULL,    # NULL for no limit on number of variables
+               force.in = NULL, force.out = NULL,
+               method = "exhaustive")
+
+summary.out <- summary(regsubsets.out)
+as.data.frame(summary.out$outmat)
+library(car)
+subsets(regsubsets.out,statistic="adjr2",legend="bottomright",main="Adjusted R^2")
+```
+The best variables for Bream to find weight is Length2 and Height.
+
+```{r}
+library(leaps)
+regsubsets.out <-
+    regsubsets(Weight ~ .,
+               data = FishiesS,
+               nbest = 1,       # 1 best model for each number of predictors
+               nvmax = NULL,    # NULL for no limit on number of variables
+               force.in = NULL, force.out = NULL,
+               method = "exhaustive")
+
+summary.out <- summary(regsubsets.out)
+as.data.frame(summary.out$outmat)
+library(car)
+subsets(regsubsets.out,statistic="adjr2",legend="bottomright",main="Adjusted R^2")
+```
+The best to variables is Length2 and Width.
 
 <!--Numerical results go here. Use the numerical results to describe the patterns if any that exist in the data as focused toward the research question!-->
 
